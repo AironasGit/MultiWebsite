@@ -35,7 +35,6 @@ def main():
     list_of_links = get_list_of_links(location_of_links)
     default_browser = windows_get_default_browser()
     arg = build_arg(window_mode, list_of_links)
-    print(arg)
     subprocess.call([default_browser, arg])
 
 
@@ -47,5 +46,5 @@ Chrome +
 Edge +
 Firefox -
 Explorer -
-other ?
+Other ?
 '''
