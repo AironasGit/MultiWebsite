@@ -4,5 +4,6 @@ Supported browsers:
     Chrome
     Edge
     Firefox
+
 Supported OS:
     Windows
