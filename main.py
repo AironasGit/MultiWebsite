@@ -23,19 +23,32 @@ def windows_get_default_browser():
 def build_arg(window, list_of_links):
     arg = window
     for link in list_of_links:
-        arg = f'{arg} {link}'
+        arg = f'{arg} {link} '
     return arg
 
 
 def main():
     # Settings
-    window_mode = "--new-window" # --parent-window (opens links in the current browser window) --new-window (opens links in new browser window)
+    window_mode = "-new-window" # -new-tab, -new-window
     location_of_links = "list_of_websites.txt"
     # Settings
     list_of_links = get_list_of_links(location_of_links)
     default_browser = windows_get_default_browser()
-    arg = build_arg(window_mode, list_of_links)
-    subprocess.call([default_browser, arg])
+    match default_browser.split("\\")[-1]:
+        case "firefox.exe":
+            if window_mode == "-new-window":
+                subprocess.call([default_browser])
+                window_mode = "-new-tab"
+            for link in list_of_links:
+                subprocess.call([default_browser, window_mode , link])
+        case "chrome.exe":
+            arg = build_arg(window_mode, list_of_links)
+            subprocess.call([default_browser, arg])
+        case "msedge.exe":
+            arg = build_arg(window_mode, list_of_links)
+            subprocess.call([default_browser, arg])
+        case "iexplore.exe":
+            ...
 
 
 if __name__ == "__main__":
@@ -44,7 +57,7 @@ if __name__ == "__main__":
 '''
 Chrome +
 Edge +
-Firefox -
+Firefox +
 Explorer -
 Other ?
 '''
