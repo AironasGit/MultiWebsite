@@ -1,6 +1,6 @@
-import sys
 import winreg
 import subprocess
+import time
 
 
 def get_list_of_links(path):
@@ -20,33 +20,36 @@ def windows_get_default_browser():
     return launch_string.split('"')[1]
 
 
-def build_arg(window, list_of_links):
-    arg = window
-    for link in list_of_links:
-        arg = f'{arg} {link} '
-    return arg
-
+def open_first_tab(window_mode, default_browser, list_of_links):
+    if window_mode == "-new-window":
+        subprocess.call([default_browser, window_mode , list_of_links[0]])
+        list_of_links.pop(0)
+        window_mode = "-new-tab"
+    return window_mode
 
 def main():
     # Settings
     window_mode = "-new-window" # -new-tab, -new-window
     location_of_links = "list_of_websites.txt"
     # Settings
+    
     list_of_links = get_list_of_links(location_of_links)
     default_browser = windows_get_default_browser()
+    
     match default_browser.split("\\")[-1]:
         case "firefox.exe":
-            if window_mode == "-new-window":
-                subprocess.call([default_browser])
-                window_mode = "-new-tab"
+            window_mode = open_first_tab(window_mode, default_browser, list_of_links)
             for link in list_of_links:
+                time.sleep(0.5) # Firefox browser opens an empty tab if there is no delay
                 subprocess.call([default_browser, window_mode , link])
         case "chrome.exe":
-            arg = build_arg(window_mode, list_of_links)
-            subprocess.call([default_browser, arg])
+            window_mode = open_first_tab(window_mode, default_browser, list_of_links)
+            for link in list_of_links:
+                subprocess.call([default_browser, window_mode , link])
         case "msedge.exe":
-            arg = build_arg(window_mode, list_of_links)
-            subprocess.call([default_browser, arg])
+            window_mode = open_first_tab(window_mode, default_browser, list_of_links)
+            for link in list_of_links:
+                subprocess.call([default_browser, window_mode , link])
         case "iexplore.exe":
             ...
 
